@@ -1,21 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HomiFy</title>
-</head>
+<% layout('/layouts/boilerplate') -%>
 <body>
     <h2>All Property Listing</h2>
-    <form method="GET" action="/listings/new">
+    <!-- <form method="GET" action="/listings/new">
         <button>Create New Listing</button>
-    </form>
-    <ul>
+    </form> -->
+
+    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+    <% for(let listing of allListings){ %>
+    <div class="card" style="width: 20rem;">
+        <img src="<%= listing.image %>" class="card-img-top"  alt="Listing_images">
+        <div class="card-body">
+          <p class="card-text">
+            <b><%= listing.title %></b><br>
+            &#8377; <%= listing.price.toLocaleString("en-IN") %> / Night
+          </p>
+        </div>
+      </div>
+      <% } %>
+    </div>
+
+    <!-- <ul>
         <% for(let listing of allListings){ %>
             <li>
                 <a href="/listings/<%= listing.id %>"><%= listing.title %></a>
             </li>
         <% } %>
-    </ul>
+    </ul> -->
 </body>
-</html>
