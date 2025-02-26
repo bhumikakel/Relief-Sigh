@@ -10,6 +10,7 @@ const methodOverride=require("method-override");
 const ejsMate=require("ejs-mate");
 const wrapAsync=require("./utils/wrapAsync");
 const ExpressError=require("./utils/ExpressError.js")
+const {listingSchema}=require("./schema.js")
 
 app.set("views",path.join(__dirname,"views"));
 app.set("view engine","ejs");
@@ -35,6 +36,21 @@ async function main() {
     await mongoose.connect(MONGO_URL)
 }
 
+app.get("/",(req,res)=>{
+    res.send("Hello @ Airbnb");
+    
+});
+
+const validateListing=(req,res,next)=>{
+    let {error}=listingSchema.validate(req.body, {abortEarly: false })
+        console.log(error);
+        if(error){
+            let errMsg=error.details.map((el)=>el.message).join(",");
+            throw new ExpressError(400,errMsg);
+        }else{
+            next();
+        }
+}
 
 //*************index route to display all listings ->  /listing
 app.get("/listings",
@@ -61,13 +77,12 @@ app.get("/listings/:id",
 
 
 //create route
-app.post("/listings",
+app.post(
+    "/listings",
+    validateListing,
     wrapAsync(async(req,res,next)=>{
-        if(!req.body.listing){
-            throw new ExpressError(400,"Send valid data for listing...")
-        }
         // let {title,description,image,price,location,country}=req.body;
-        const newListing= new Listing(req.body.listing);
+        const newListing= new Listing(req.body.listing); 
         await newListing.save();
         res.redirect("/listings");  
     })
@@ -80,10 +95,8 @@ app.post("/listings",
 //put route ->PUT /listing/:id
 
 app.get("/listings/:id/edit",
+    
     wrapAsync(async(req,res)=>{
-        if(!req.body.listing){
-            throw new ExpressError(400,"Send valid data for listing...")
-        }
         let {id}=req.params;
         const listing= await Listing.findById(id);
         res.render("listings/edit.ejs",{listing});
@@ -93,10 +106,8 @@ app.get("/listings/:id/edit",
 //update route
 //put route ->PUT /listing/:id
 app.put("/listings/:id",
+    validateListing,
     wrapAsync(async(req,res)=>{
-        if(!req.body.listing){
-            throw new ExpressError(400,"Send valid data for listing...")
-        }
         let {id}=req.params;
         await Listing.findByIdAndUpdate(id,{...req.body.listing});
         res.redirect("/listings");
@@ -126,10 +137,7 @@ app.delete("/listings/:id",
     
 // })
 
-app.get("/",(req,res)=>{
-    res.send("Hello @ Airbnb");
-    
-})
+
 
 app.all("*",(req,res,next)=>{
     next(new ExpressError(404,"Page Not Found"))
