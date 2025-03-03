@@ -29,8 +29,9 @@
                     name="email" 
                     class="form-control" 
                     type="email" 
-                    required>
-                    
+                    required
+                    pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" >
+                    <div class="invalid-feedback" id="emailError"> </div>
                 </div>
 
                 <div class="mb-3">
@@ -41,8 +42,11 @@
                     name="password" 
                     class="form-control" 
                     type="password" 
-                    required>
-                    
+                    required
+                    pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$">
+                    <div class="invalid-feedback" id="passwordError">
+                        
+                      </div>
                 </div>
                 <button class="btn btn-success">Signup</button>
             </form>

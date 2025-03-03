@@ -36,7 +36,7 @@ router.get("/new",isLoggedIn,listingController.renderNewForm)
 //put route ->PUT /listing/:id
 //delete route
 router.route("/:id")
-    .get(wrapAsync(listingController.showListing))
+    .get(isLoggedIn,wrapAsync(listingController.showListing))
     .put(
         isLoggedIn,
         isOwner,

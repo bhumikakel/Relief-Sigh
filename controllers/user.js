@@ -14,7 +14,7 @@ module.exports.signup=async(req,res)=>{
             if(err){
                 return next(err);
             }
-            req.flash("success","Welcome to ReliefSigh")
+            req.flash("success",`Hello, ${req.user.username} . Welcome to ReliefSigh`)
             res.redirect("/listings");
         })
         // console.log(registeredUser);
@@ -31,7 +31,7 @@ module.exports.renderLoginForm=(req,res)=>{
 };
 
 module.exports.login=async(req,res)=>{
-    req.flash("success","Welcome back to ReliefSigh");
+    req.flash("success",`Hello ${req.user.username} , Welcome back to ReliefSigh`);
     let redirectUrl=res.locals.redirectUrl || "/listings";
     res.redirect(redirectUrl);
 };
@@ -41,7 +41,7 @@ module.exports.logout=(req,res,next)=>{
         if(err){
             return next(err);
         }
-        req.flash("success","You're logged out successfully!");
+        req.flash("success","You're logged out successfully!" );
         res.redirect("/listings")
     })
 };
